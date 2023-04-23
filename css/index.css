@@ -1,18 +1,21 @@
-body{
-    display: flex;
-    min-height: 100vh;
-    flex-direction: column;
-}
-
-section {
-    flex: 1 0 auto;
-}
 nav{
-    height: 12vh;
+    background-color: #272727;
 }
-section{
-    display: contents;
+hr{
+    width: 75%;
+    margin-left: 12.5%;
+    color: #000;
 }
-.page-footer{
-    background-color: rgb(95, 95, 95);
+.cartas{
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
+    justify-content: center;
+}
+.cartas div{
+    margin: 2.5%;
+}
+.ms-3{
+    margin-right: 5%;
+    font-size: 25px;
 }
