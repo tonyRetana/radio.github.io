@@ -1,63 +1,34 @@
-const audio = document.querySelector('audio'),
-    songLenght = document.getElementById('SongLength'),
-    currentTime = document.getElementById('CurrentSongTime');
+// Obtener elementos DOM relevantes
+const music = document.getElementById("music");
+const playButton = document.getElementById("pButton");
+const timeline = document.getElementById("timeline");
+const playhead = document.getElementById("playhead");
 
-const calculateTime = (secs) => {
-    const minutes= Math.floor(secs/60),
-        seconds= Math.floor(secs%60),
-        returnedSeconds = seconds < 10 ? `0${seconds}` : `${seconds}`;
-        return `${minutes}:${returnedSeconds}`
-};
+// Inicializar el playhead en la posición 0
+playhead.style.marginLeft = "0px";
 
-const displayDuration = () =>{
-    songLenght.innerHTML=calculateTime(audio.duration)
-}
-if(audio.readyState > 0){
-    displayDuration();
-    currentTime.innerHTML=calculateTime(audio.currentTime);
-}else{
-    audio.addEventListener('loadedmetadata',()=>{
-        displayDuration();
-    })
+// Función para actualizar la posición del playhead
+function updatePlayhead() {
+  // Calcular la posición del playhead en función de la duración actual del audio
+  const timelineWidth = timeline.offsetWidth - playhead.offsetWidth;
+  const playPercent = 100 * (music.currentTime / music.duration);
+  const playheadPos = timelineWidth * (playPercent / 100);
+  playhead.style.marginLeft = playheadPos + "px";
 }
 
-audio.ontimeupdate = function(){
-    currentTime.innerHTML = calculateTime(audio.currentTime);
-    setProgress();
-}
-
-function setProgress(){
-    let percentage = (audio.currentTime / audio.duration)*100;
-    document.querySelector('.progress').getElementsByClassName.width = percentage + '%'
-}
-
-const playPause = document.getElementById('PlayPause'),
-    plus10 = document.getElementById('Plus10'),
-    back10 = document.getElementById('Back10');
-
-playPause.addEventListener('click' , ()=>{
-    if(audio.paused){
-        playPause.src = 'Pause.svg';
-        audio.play();
-    }else{
-        playPause.src = 'Play.svg'
-    }
-})
-
-plus10.addEventListener('click',()=>{
-    audio.currentTime+=10;
-})
-back10.addEventListener('click',()=>{
-    audio.currentTime-=10;
-})
-
-function setProgress() {
-    let percentage = (audio.currentTime / audio.duration) * 100;
-    document.querySelector('.progress-bar').value = percentage;
+// Función para reproducir o pausar el audio
+function togglePlay() {
+  if (music.paused) {
+    music.play();
+    playButton.className = "fas fa-pause";
+  } else {
+    music.pause();
+    playButton.className = "fas fa-play";
   }
-  
-  audio.ontimeupdate = function(){
-    currentTime.innerHTML = calculateTime(audio.currentTime);
-    setProgress();
-  }
-  
+}
+
+// Agregar un evento click al botón de reproducción/pausa
+playButton.addEventListener("click", togglePlay);
+
+// Actualizar la posición del playhead cuando se reproduce el audio
+music.addEventListener("timeupdate", updatePlayhead);
