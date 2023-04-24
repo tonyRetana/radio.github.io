@@ -1,34 +1,39 @@
-// Obtener elementos DOM relevantes
-const music = document.getElementById("music");
-const playButton = document.getElementById("pButton");
-const timeline = document.getElementById("timeline");
-const playhead = document.getElementById("playhead");
+const audio = document.getElementById('music');
+const playBtn = document.getElementById('pButton');
+const timeline = document.getElementById('timeline');
+const playhead = document.getElementById('playhead');
 
-// Inicializar el playhead en la posición 0
-playhead.style.marginLeft = "0px";
+let timelineWidth = timeline.offsetWidth - playhead.offsetWidth;
 
-// Función para actualizar la posición del playhead
-function updatePlayhead() {
-  // Calcular la posición del playhead en función de la duración actual del audio
-  const timelineWidth = timeline.offsetWidth - playhead.offsetWidth;
-  const playPercent = 100 * (music.currentTime / music.duration);
-  const playheadPos = timelineWidth * (playPercent / 100);
-  playhead.style.marginLeft = playheadPos + "px";
-}
-
-// Función para reproducir o pausar el audio
+// Función para reproducir o pausar la canción
 function togglePlay() {
-  if (music.paused) {
-    music.play();
-    playButton.className = "fas fa-pause";
+  if (audio.paused) {
+    audio.play();
+    playBtn.classList.remove('fa-play');
+    playBtn.classList.add('fa-pause');
   } else {
-    music.pause();
-    playButton.className = "fas fa-play";
+    audio.pause();
+    playBtn.classList.remove('fa-pause');
+    playBtn.classList.add('fa-play');
   }
 }
 
-// Agregar un evento click al botón de reproducción/pausa
-playButton.addEventListener("click", togglePlay);
+// Función para mover el playhead en el timeline
+function movePlayhead(e) {
+  let newPosition = e.clientX - timeline.getBoundingClientRect().left;
+  if (newPosition >= 0 && newPosition <= timelineWidth) {
+    playhead.style.marginLeft = newPosition + "px";
+    audio.currentTime = audio.duration * (newPosition / timelineWidth);
+  }
+}
 
-// Actualizar la posición del playhead cuando se reproduce el audio
-music.addEventListener("timeupdate", updatePlayhead);
+// Event listeners
+playBtn.addEventListener('click', togglePlay);
+
+timeline.addEventListener('click', movePlayhead);
+
+audio.addEventListener('timeupdate', function() {
+  let playPercent = timelineWidth * (audio.currentTime / audio.duration);
+  playhead.style.marginLeft = playPercent + "px";
+});
+
